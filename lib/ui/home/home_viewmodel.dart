@@ -27,6 +27,7 @@ class HomeViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+
   void _setProfileRes(ResponseWrapper<ProfileResponse> res){
     profileRes = res;
     notifyListeners();
@@ -50,5 +51,6 @@ class HomeViewModel extends ChangeNotifier{
           Utils.dismissLoading();
         });
   }
+
 
 }

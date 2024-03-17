@@ -15,6 +15,7 @@ class RegisterViewModel extends ChangeNotifier{
   final _repo = Repository();
 
   late String _fullName;
+  late String _email;
   late String _phoneNumber;
   late String _password;
   late String _confirmPassword;
@@ -29,6 +30,7 @@ class RegisterViewModel extends ChangeNotifier{
   }
 
   String get fullName => _fullName;
+  String get email => _email;
 
   String get phoneNumber => _phoneNumber;
 
@@ -38,6 +40,11 @@ class RegisterViewModel extends ChangeNotifier{
 
   setFullName(String value) {
     _fullName = value;
+    notifyListeners();
+  }
+
+  setEmail(String value) {
+    _email = value;
     notifyListeners();
   }
 
@@ -65,7 +72,7 @@ class RegisterViewModel extends ChangeNotifier{
   Future<void> register(BuildContext context) async{
     _showLoading(true);
     Utils.showLoading();
-    RegisterRequest request = RegisterRequest(fullName: fullName, password: password, phone: phoneNumber);
+    RegisterRequest request = RegisterRequest(name: fullName, email: email, password: password, phone: phoneNumber);
     _setRegisterRes(ResponseWrapper.loading());
 
     _repo

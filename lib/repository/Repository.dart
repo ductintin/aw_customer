@@ -1,6 +1,7 @@
 
 import 'dart:developer';
 
+import 'package:aw_customer/data/model/api/response/search_location_response.dart';
 import 'package:dio/dio.dart';
 import 'package:aw_customer/data/model/api/request/LoginRequest.dart';
 import 'package:aw_customer/data/model/api/request/register_request.dart';
@@ -124,6 +125,23 @@ class Repository{
       return jsonData;
     }catch(e){
       log("changeDriverState Error: $e");
+      rethrow;
+    }
+  }
+
+  Future<SearchLocationResponse> searchLocation(String input) async {
+    Options options = Options(
+        headers: {
+          'isSearchLocation' : '1',
+        }
+    );
+
+    try{
+      dynamic res = await _apiService.get('${ApiEndPoints.SEARCH_LOCATION}?input=$input&key=${ApiEndPoints.GEO_API_KEY}', options);
+      final jsonData = SearchLocationResponse.fromJson(res);
+      return jsonData;
+    }catch(e){
+      log("Searchlocation Error: $e");
       rethrow;
     }
   }

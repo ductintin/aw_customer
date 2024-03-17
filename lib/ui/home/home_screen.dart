@@ -1,4 +1,5 @@
 
+import 'package:aw_customer/res/colors/AppColor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:aw_customer/ui/navpages/home_page.dart';
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen>{
 
     return
         Scaffold(
+          resizeToAvoidBottomInset: false,
           body: Center(
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
@@ -73,8 +75,8 @@ class _HomeScreenState extends State<HomeScreen>{
                 label: 'Trang chủ',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: 'Thu nhập',
+                icon: Icon(Icons.access_time_rounded),
+                label: 'Hoạt động',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
@@ -82,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen>{
               ),
             ],
             currentIndex: _selectedIndex,
-            selectedItemColor: const Color(0xFF7EA567),
+            selectedItemColor: AppColor.mainColor,
             onTap: _onItemTapped,
             selectedLabelStyle: const TextStyle(
               fontFamily: 'Roboto',

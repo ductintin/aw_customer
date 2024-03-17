@@ -57,7 +57,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         SizedBox(
                           child: TextFormField(
-                            onChanged: (value)=> vm.setFullName(value),
+                            onChanged: (value)=> vm.setFullName(value.trim()),
                             decoration: InputDecoration(
                               counterText: '',
                               hintText: 'Họ và tên',
@@ -92,7 +92,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         SizedBox(
                           child: TextFormField(
-                            onChanged: (value)=> vm.setPhoneNumber(value),
+                            onChanged: (value)=> vm.setEmail(value.trim()),
+                            decoration: InputDecoration(
+                              counterText: '',
+                              hintText: 'Email',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(width: 1, color: Color(0xFF7EA567)),
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                            ),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16
+                            ),
+
+                            validator: (value) {
+                              if(value!.isEmpty){
+                                return "Vui lòng nhập email";
+                              }
+
+                              final RegExp emailRegex = RegExp(
+                                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,5}))$');
+                              if(!emailRegex.hasMatch(value)){
+                                return "Email không đúng định dạng";
+                              }
+
+                              return null;
+                            },
+                            maxLength: 50,
+                            maxLines: 1,
+                          ),
+                        ),
+
+                        SizedBox(
+                          height: 20,
+                        ),
+
+                        SizedBox(
+                          child: TextFormField(
+                            onChanged: (value)=> vm.setPhoneNumber(value.trim()),
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               counterText: '',
@@ -130,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         SizedBox(
                           child: TextFormField(
-                            onChanged: (value)=> vm.setPassword(value),
+                            onChanged: (value)=> vm.setPassword(value.trim()),
                             obscureText: !isPWVisible,
                             decoration: InputDecoration(
                               hintText: 'Mật khẩu',
@@ -175,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         SizedBox(
                           child: TextFormField(
-                            onChanged: (value)=> vm.setConfirmPassword(value),
+                            onChanged: (value)=> vm.setConfirmPassword(value.trim()),
                             obscureText: !isCPWVisible,
                             decoration: InputDecoration(
                               hintText: 'Xác nhận mật khẩu',

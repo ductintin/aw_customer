@@ -276,10 +276,17 @@ class _AccountPageState extends State<AccountPage> {
                         onPressed: () {
                           AppPreferencesService()
                               .remove(PreferencesService.KEY_BEARER_TOKEN);
-                          Navigator.pushReplacement(
+                          // Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => const LoginScreen()));
+                          
+                          Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()));
+                                  builder: (context) => const LoginScreen()),
+                                  (route) => false);
+
                         },
                         style: ElevatedButton.styleFrom(
                           primary: AppColor.mainColor,

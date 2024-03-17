@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:aw_customer/data/model/api/response/search_location.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +34,24 @@ class HomePageViewModel extends ChangeNotifier{
 
   LocationData? get currentLocation => _currentLocation;
 
+  List<SearchLocation> _originList = [];
+
+  List<SearchLocation> get originList => _originList;
+
+  void setListOrigin(List<SearchLocation> originList){
+    _originList = originList;
+    notifyListeners();
+  }
+
+  List<SearchLocation> _destinationList = [];
+
+  List<SearchLocation> get destinationList => _destinationList;
+
+  void setListDestination(List<SearchLocation> destinationList){
+    _destinationList = destinationList;
+    notifyListeners();
+  }
+
   bool _isActive = false;
 
   int _driverState = 0;
@@ -40,6 +59,40 @@ class HomePageViewModel extends ChangeNotifier{
   int get driverState => _driverState;
 
   bool get isActive => _isActive;
+
+  String _origin = "";
+  String _destination = "";
+  String _originId = "";
+  String _destinationId = "";
+
+  String get origin => _origin;
+
+  void setOrigin(String value) {
+    _origin = value;
+    notifyListeners();
+  }
+
+  String get destination => _destination;
+
+  void setDestination(String value) {
+    _destination = value;
+    notifyListeners();
+  }
+
+  String get originId => _originId;
+
+  void setOriginId(String value) {
+    _originId = value;
+    notifyListeners();
+  }
+
+  String get destinationId => _destinationId;
+
+  void setDestinationId(String value) {
+    _destinationId = value;
+    notifyListeners();
+  }
+
 
   void setActive(bool value) {
     _isActive = value;
@@ -131,6 +184,37 @@ class HomePageViewModel extends ChangeNotifier{
         .onError((error, stackTrace) {
     })
         .whenComplete((){
+    });
+  }
+
+
+  Future<void> searchLocation(String location) async {
+    _repo.searchLocation("$location Việt Nam")
+        .then((value) => {
+          if(value.status == "OK"){
+            setListOrigin(value!.predictions!)
+          }
+        })
+        .onError((error, stackTrace) => {
+
+        })
+        .whenComplete(() => {
+
+    });
+  }
+
+  Future<void> searchDestination(String location) async {
+    _repo.searchLocation("$location Việt Nam")
+        .then((value) => {
+      if(value.status == "OK"){
+        setListDestination(value!.predictions!)
+      }
+    })
+        .onError((error, stackTrace) => {
+
+    })
+        .whenComplete(() => {
+
     });
   }
 }

@@ -22,6 +22,7 @@ class AuthInterceptor extends Interceptor{
     if (isIgnore != null && isIgnore == '1') {
       options.headers.remove('IgnoreAuth');
       handler.next(options);
+      log("not auth");
       return;
     }
 
@@ -43,6 +44,25 @@ class AuthInterceptor extends Interceptor{
     //   handler.next(options);
     //   return;
     // }
+
+    String? isSearchLocation = options.headers['isSearchLocation'];
+    if (isSearchLocation != null && isSearchLocation == '1') {
+      Uri url = options.uri;
+      String queryNames = url.query;
+      StringBuffer builder = StringBuffer(BaseApiService.GEO_SEARCH_URL);
+      builder.write('/');
+      for (int i = 0; i < options.uri.pathSegments.length; i++) {
+        if (i == options.uri.pathSegments.length - 1) {
+          builder.write('${options.uri.pathSegments[i]}?$queryNames');
+        } else {
+          builder.write('${options.uri.pathSegments[i]}/');
+        }
+      }
+      options.headers.remove('isSearchLocation');
+      options.path = builder.toString();
+      handler.next(options);
+      return;
+    }
 
 
 
