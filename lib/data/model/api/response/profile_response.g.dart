@@ -9,19 +9,21 @@ part of 'profile_response.dart';
 ProfileResponse _$ProfileResponseFromJson(Map<String, dynamic> json) =>
     ProfileResponse(
       id: json['id'] as int?,
-      fullName: json['fullName'] as String?,
+      name: json['name'] as String?,
       phone: json['phone'] as String?,
       address: json['address'] as String?,
       avatar: json['avatar'] as String?,
+      email: json['email'] as String?,
       averageRating: (json['averageRating'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$ProfileResponseToJson(ProfileResponse instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'fullName': instance.fullName,
+      'name': instance.name,
       'phone': instance.phone,
       'address': instance.address,
       'avatar': instance.avatar,
+      'email': instance.email,
       'averageRating': instance.averageRating,
     };

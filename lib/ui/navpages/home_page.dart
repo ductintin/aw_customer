@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:aw_customer/data/model/api/response/search_location.dart';
 import 'package:aw_customer/res/colors/AppColor.dart';
+import 'package:aw_customer/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -39,6 +40,7 @@ class _HomePageState extends State<HomePage>
     // TODO: implement build
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Color(0xffEEF2F5),
       body: ChangeNotifierProvider<HomePageViewModel>(
         create: (BuildContext context) => vm,
         child: Consumer<HomePageViewModel>(
@@ -61,22 +63,32 @@ class _HomePageState extends State<HomePage>
                         ),
                       ),
 
-                      Card(
-                        margin: EdgeInsets.all(15.0),
-                        surfaceTintColor: Colors.white,
-                        elevation: 5.0,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+
+                        ),
+                        margin: EdgeInsets.only(left: 15.0, right: 15.0),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
                               Row(
                                 children: [
-                                  Image(
-                                    image: AssetImage(
-                                        'assets/images/icon_vector.png'),
-                                    height: 30,
-                                    width: 30,
+                                  // Image(
+                                  //   image: AssetImage(
+                                  //       'assets/images/icon_vector.png'),
+                                  //   height: 30,
+                                  //   width: 30,
+                                  // ),
+
+                                  Icon(
+                                    Icons.location_on_rounded,
+                                    color: AppColor.mainColor,
+                                    size: 30,
                                   ),
+
                                   SizedBox(
                                     width: 16,
                                   ),
@@ -101,6 +113,11 @@ class _HomePageState extends State<HomePage>
                                             if(value.isNotEmpty)
                                               vm.searchLocation(vm.origin)
                                           },
+
+                                          onTap: () {
+                                            vm.setListDestination([]);
+                                          },
+
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w700,
                                               fontSize: 16,
@@ -109,7 +126,7 @@ class _HomePageState extends State<HomePage>
                                           decoration: InputDecoration(
                                               hintText: 'Nhập địa điểm đón',
                                               border: InputBorder.none,
-                                              suffixIcon: IconButton(
+                                              suffixIcon: vm.origin.isNotEmpty ? IconButton(
                                                 onPressed: () {
                                                   depController.clear();
                                                   vm.setOrigin("");
@@ -118,7 +135,7 @@ class _HomePageState extends State<HomePage>
                                                 },
                                                 icon: const Icon(
                                                     Icons.close_rounded),
-                                              )),
+                                              ) : null),
                                         ),
                                       ],
                                     ),
@@ -131,12 +148,19 @@ class _HomePageState extends State<HomePage>
                               ),
                               Row(
                                 children: [
-                                  Image(
-                                    image: AssetImage(
-                                        'assets/images/icon_destination.png'),
-                                    height: 30,
-                                    width: 30,
+                                  // Image(
+                                  //   image: AssetImage(
+                                  //       'assets/images/icon_destination.png'),
+                                  //   height: 30,
+                                  //   width: 30,
+                                  // ),
+
+                                  Icon(
+                                    Icons.flag,
+                                    color: Colors.yellow,
+                                    size: 30,
                                   ),
+
                                   SizedBox(
                                     width: 16,
                                   ),
@@ -149,6 +173,10 @@ class _HomePageState extends State<HomePage>
                                         if(value.isNotEmpty)
                                           vm.searchDestination(value)
                                       },
+
+                                      onTap: (){
+                                        vm.setListOrigin([]);
+                                      },
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 16,
@@ -157,7 +185,7 @@ class _HomePageState extends State<HomePage>
                                       decoration: InputDecoration(
                                           hintText: 'Nhập địa điểm đến',
                                           border: InputBorder.none,
-                                          suffixIcon: IconButton(
+                                          suffixIcon: vm.destination.isNotEmpty ? IconButton(
                                             onPressed: () {
                                               desController.clear();
                                               vm.setDestination("");
@@ -165,8 +193,9 @@ class _HomePageState extends State<HomePage>
                                               vm.setListDestination([]);
                                             },
                                             icon:
-                                                const Icon(Icons.close_rounded),
-                                          )),
+                                            const Icon(Icons.close_rounded),
+                                          ) : null
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -174,6 +203,10 @@ class _HomePageState extends State<HomePage>
                             ],
                           ),
                         ),
+                      ),
+
+                      SizedBox(
+                        height: 15.0,
                       ),
 
                       if(vm.originList.isNotEmpty) _uiLocation(vm),
@@ -190,6 +223,9 @@ class _HomePageState extends State<HomePage>
                       child: ElevatedButton(
                         onPressed: vm.originId.isNotEmpty && vm.destinationId.isNotEmpty ? () {
                           log("hello");
+                          if(vm.originId == vm.destinationId){
+                            Utils.flushBarErrorMessage("Địa điểm đoán và đến bị trùng lặp, vui lòng chọn địa chỉ khác!", context);
+                          }
                         } : null,
                         style: ElevatedButton.styleFrom(
                           primary: AppColor.mainColor,
@@ -224,46 +260,67 @@ class _HomePageState extends State<HomePage>
       itemCount: viewModel.originList.length,
       itemBuilder: (context, index) {
         SearchLocation sr = viewModel.originList[index];
-        return Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+        return Container(
+          margin: EdgeInsets.only(left: 15.0, right: 15.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+
+          ),
+          padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
           child: Column(
             children: [
-              InkWell(
-                onTap: (){
-                  depController.text = sr.description!;
-                  viewModel.setOrigin(sr.description!);
-                  viewModel.setOriginId(sr.place_id!);
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    size: 20.0,
+                    color: AppColor.mainColor,
+                  ),
 
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      sr!.structured_formatting!.main_text!,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xff424242),
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Text(
-                      sr!.description!,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Colors.grey,
-                          overflow: TextOverflow.ellipsis),
-                    ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
 
-                    Divider(
-                      thickness: 1.0,
-                      color: Colors.grey,
-                    )
-                  ],
-                ),
+                  Expanded(
+                      child: InkWell(
+                        onTap: (){
+                          depController.text = sr.description!;
+                          viewModel.setOrigin(sr.description!);
+                          viewModel.setOriginId(sr.place_id!);
+
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              sr!.structured_formatting!.main_text!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  color: Color(0xff424242),
+                                  overflow: TextOverflow.ellipsis),
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Text(
+                              sr!.description!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                  overflow: TextOverflow.ellipsis),
+                            ),
+
+                            Divider(
+                              thickness: 1.0,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
+                      ))
+                ],
               )
             ],
           ),
@@ -281,46 +338,67 @@ class _HomePageState extends State<HomePage>
       itemCount: viewModel.destinationList.length,
       itemBuilder: (context, index) {
         SearchLocation sr = viewModel.destinationList[index];
-        return Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+        return Container(
+          margin: EdgeInsets.only(left: 15.0, right: 15.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+
+          ),
+          padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0, bottom: 10.0),
           child: Column(
             children: [
-              InkWell(
-                onTap: (){
-                  desController.text = sr.description!;
-                  viewModel.setDestination(sr.description!);
-                  viewModel.setDestinationId(sr.place_id!);
+              Row(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    size: 20.0,
+                    color: AppColor.mainColor,
+                  ),
 
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      sr!.structured_formatting!.main_text!,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xff424242),
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Text(
-                      sr!.description!,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Colors.grey,
-                          overflow: TextOverflow.ellipsis),
-                    ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
 
-                    Divider(
-                      thickness: 1.0,
-                      color: Colors.grey,
-                    )
-                  ],
-                ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: (){
+                        desController.text = sr.description!;
+                        viewModel.setDestination(sr.description!);
+                        viewModel.setDestinationId(sr.place_id!);
+                    
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            sr!.structured_formatting!.main_text!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: Color(0xff424242),
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Text(
+                            sr!.description!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                                color: Colors.grey,
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                    
+                          Divider(
+                            thickness: 1.0,
+                            color: Colors.grey,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               )
             ],
           ),

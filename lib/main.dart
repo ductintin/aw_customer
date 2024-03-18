@@ -31,22 +31,22 @@ Future<void> main() async {
   PreferencesService _pref = AppPreferencesService();
   String? token = await _pref.getToken();
   Message message = Message("DRIVER_APP", "1.0", Command.COMMAND_PING,booking.toMap().toString() ,"vi", 0, 35000, token);
-  pingTimer = Timer.periodic(Duration(seconds: 20), (timer) {
-    channel.sink.add(message.toJson().toString());
-    log(message.toJson().toString());
-  });
-  channel.stream.listen(
-        (event) {
-      print('Received data: $event');
-    },
-    onDone: () {
-      print('Connection closed');
-    },
-    onError: (error) {
-      print('Error: $error');
-    },
-    cancelOnError: true, // Ensure that the listener is canceled on error
-  );
+  // pingTimer = Timer.periodic(Duration(seconds: 20), (timer) {
+  //   channel.sink.add(message.toJson().toString());
+  //   log(message.toJson().toString());
+  // });
+  // channel.stream.listen(
+  //       (event) {
+  //     print('Received data: $event');
+  //   },
+  //   onDone: () {
+  //     print('Connection closed');
+  //   },
+  //   onError: (error) {
+  //     print('Error: $error');
+  //   },
+  //   cancelOnError: true, // Ensure that the listener is canceled on error
+  // );
 
   runApp(const MyApp());
   configLoading();

@@ -1,5 +1,6 @@
 
 import 'package:aw_customer/res/colors/AppColor.dart';
+import 'package:aw_customer/ui/navpages/history_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:aw_customer/ui/navpages/home_page.dart';
@@ -62,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen>{
               children: [
                 // Your first page widget
                 HomePage(),
-                Text('Thu nhập'),
+                HistoryPage(),
                 AccountPage(),
               ],
             ),

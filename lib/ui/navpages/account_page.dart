@@ -1,11 +1,21 @@
+import 'dart:math';
+
+import 'package:aw_customer/data/remote/network/ApiEndPoints.dart';
+import 'package:aw_customer/data/remote/network/BaseApiService.dart';
+import 'package:aw_customer/ui/navpages/account_page_view_model.dart';
+import 'package:aw_customer/ui/widget/card_profile_shimmer.dart';
+import 'package:aw_customer/ui/widget/circle_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:aw_customer/data/local/prefs/AppPreferecesService.dart';
 import 'package:aw_customer/res/colors/AppColor.dart';
 import 'package:aw_customer/res/colors/AppColors.dart';
 import 'package:aw_customer/ui/history/history_screen.dart';
 import 'package:aw_customer/ui/login/LoginScreen.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/local/prefs/PreferencesService.dart';
+import '../../data/model/api/ApiStatus.dart';
+import '../widget/shimmer.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -15,200 +25,267 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  final AccountPageViewModel viewModel = AccountPageViewModel();
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    viewModel.getProfile(context);
+
+  }
+
   @override
   Widget build(BuildContext context) {
+    const _shimmerGradient = LinearGradient(
+      colors: [
+        Color(0xFFEBEBF4),
+        Color(0xFFF4F4F4),
+        Color(0xFFEBEBF4),
+      ],
+      stops: [
+        0.1,
+        0.3,
+        0.4,
+      ],
+      begin: Alignment(-1.0, -0.3),
+      end: Alignment(1.0, 0.3),
+      tileMode: TileMode.clamp,
+    );
+
     return Scaffold(
+      backgroundColor: Color(0xffEEF2F5),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(top: 40, left: 16, right: 16),
-            child: Column(
-              children: [
-                const SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    'Cài đặt',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                      fontSize: 36.0,
-                    ),
-                  ),
-                ),
-                Card(
-                  surfaceTintColor: Colors.white,
-                  shadowColor: Colors.lightGreenAccent,
-                  elevation: 4.0,
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Image(
-                          image: AssetImage('assets/images/user_avatar.png'),
-                          width: 50.0,
-                          height: 50.0,
-                        ),
-                        SizedBox(
-                          width: 30,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Nguyen Van An',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18.0),
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.only(top: 20, left: 16, right: 16),
+              child: ChangeNotifierProvider<AccountPageViewModel>(
+                  create: (BuildContext context) => viewModel,
+                  child: Consumer<AccountPageViewModel>(
+                    builder: (context, value, _){
+                      return Column(
+                        children: [
+                          const SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              'Cài đặt',
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black,
+                                fontSize: 36.0,
                               ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: value.res.status == ApiStatus.LOADING ?
+                                  Shimmer(
+                                      linearGradient: _shimmerGradient,
+                                    child: _buildTopRowItem(),
+                                    )
+
+                               : value.res.status == ApiStatus.ERROR ?
+                              Image(
+                                image: AssetImage('assets/images/user_avatar.png'),
+                                width: 50.0,
+                                height: 50.0,
+                              )
+                               :
                               Row(
                                 children: [
-                                  Image(
-                                    image: AssetImage(
-                                        'assets/images/icon_star.png'),
-                                    width: 15.0,
-                                    height: 15.0,
+                                  ClipOval(
+                                    child: Image.network(
+                                      '${BaseApiService.MEDIA_URL}/v1/file/download${value.res.data!.avatar!}',
+                                      width: 60.0,
+                                      height: 60.0,
+                                    ),
                                   ),
+
                                   SizedBox(
-                                    width: 10,
+                                    width: 30,
                                   ),
-                                  Text(
-                                    '5.0',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w400),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          value.res.data?.name ?? '',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18.0),
+                                        ),
+
+                                        Text(
+                                          value.res.data?.email ?? '',
+                                          style: TextStyle(fontWeight: FontWeight.w500,
+                                              color: Colors.grey
+                                          ),
+                                        )
+
+                                      ],
+                                    ),
+                                  ),
+                                  // Image(
+                                  //   image: AssetImage('assets/images/icon_arrow.png'),
+                                  //   width: 50.0,
+                                  //   height: 50.0,
+                                  // ),
+
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 25.0,
                                   )
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                        Image(
-                          image: AssetImage('assets/images/icon_arrow.png'),
-                          width: 50.0,
-                          height: 50.0,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Card(
-                  surfaceTintColor: Colors.white,
-                  shadowColor: Colors.lightGreenAccent,
-                  elevation: 4.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            print('hello');
-                          },
-                          child: Row(
-                            children: [
-                              Image(
-                                image:
-                                    AssetImage('assets/images/icon_config.png'),
-                                width: 50.0,
-                                height: 50.0,
-                              ),
-                              Expanded(
-                                  child: Text(
-                                'Cấu hình dịch vụ',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18.0),
-                              )),
-                              Image(
-                                image:
-                                    AssetImage('assets/images/icon_arrow.png'),
-                                width: 50.0,
-                                height: 50.0,
-                              ),
-                            ],
+                          SizedBox(
+                            height: 30,
                           ),
-                        ),
-                        Divider(
-                          color: Color(0xFFC0C0C0),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const HistoryScreen()));
-                          },
-                          child: Row(
-                            children: [
-                              Image(
-                                image:
-                                    AssetImage('assets/images/icon_config.png'),
-                                width: 50.0,
-                                height: 50.0,
-                              ),
-                              Expanded(
-                                  child: Text(
-                                'Lịch sử',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18.0),
-                              )),
-                              Image(
-                                image:
-                                    AssetImage('assets/images/icon_arrow.png'),
-                                width: 50.0,
-                                height: 50.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      print('hello');
+                                    },
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.discount,
+                                            size: 25.0,
+                                          ),
 
-                SizedBox(
-                  height: 20,
-                ),
+                                          SizedBox(
+                                            width: 20.0,
+                                          ),
 
-                Card(
-                    surfaceTintColor: Colors.white,
-                    shadowColor: Colors.lightGreenAccent,
-                    elevation: 4.0,
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Column(children: [
-                          InkWell(
-                            onTap: (){
-                              openAlert(context);
-                            },
-                            child: Row(
-                              children: [
-                                Image(
-                                  image: AssetImage('assets/images/icon_config.png'),
-                                  width: 50.0,
-                                  height: 50.0,
-                                ),
+                                          Expanded(
+                                              child: Text(
+                                                'Mã giảm giá',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18.0),
+                                              )),
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 25.0,
+                                          )
 
-
-                                Expanded(child: Text(
-                                  'Đăng xuất',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 18.0
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                )),
+                                  const Divider(
+                                    color: Color(0xFFC0C0C0),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                              const HistoryScreen()));
+                                    },
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.history,
+                                            size: 25.0,
+                                          ),
+                                          SizedBox(
+                                            width: 20.0,
+                                          ),
 
-                              ],
+                                          Expanded(
+                                              child: Text(
+                                                'Lịch sử',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18.0),
+                                              )),
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 25.0,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
 
-                        ])))
-              ],
+                          const SizedBox(
+                            height: 20,
+                          ),
+
+                          Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Column(children: [
+                                    InkWell(
+                                      onTap: (){
+                                        openAlert(context);
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(12.0),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.logout,
+                                              size: 25.0,
+                                            ),
+
+                                            SizedBox(
+                                              width: 20.0,
+                                            ),
+
+                                            Expanded(child: Text(
+                                              'Đăng xuất',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 18.0
+                                              ),
+                                            )),
+
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
+                                  ])))
+                        ],
+                      );
+                    },
+                  )
+              ),
             ),
           ),
         ),
@@ -229,11 +306,12 @@ class _AccountPageState extends State<AccountPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
+              const Text(
                 'Bạn có muốn đăng xuất?',
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20.0),
               ),
-              SizedBox(
+
+              const SizedBox(
                 height: 16,
               ),
 
@@ -243,13 +321,6 @@ class _AccountPageState extends State<AccountPage> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 12, right: 6),
                       child: OutlinedButton(
-                        child: Text(
-                        "Hủy",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500),
-                      ),
                         style: OutlinedButton.styleFrom(
                           primary: Colors.green,
                           side: BorderSide(color: Color(0xFF7EA567)),
@@ -259,19 +330,26 @@ class _AccountPageState extends State<AccountPage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
+                        child: const Text(
+                        "Hủy",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500),
+                      ),
 
 
                       ),
                       )
                     ),
 
-                  SizedBox(
+                  const SizedBox(
                     width: 16,
                   ),
 
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(left: 6, right: 12),
+                      padding: const EdgeInsets.only(left: 6, right: 12),
                       child: ElevatedButton(
                         onPressed: () {
                           AppPreferencesService()
@@ -293,7 +371,7 @@ class _AccountPageState extends State<AccountPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4)),
                         ),
-                        child: Text(
+                        child: const Text(
                           "Đăng xuất",
                           style: TextStyle(
                               fontSize: 16,
@@ -312,5 +390,16 @@ class _AccountPageState extends State<AccountPage> {
       ),
     );
     showDialog(context: context, builder: (BuildContext context) => dialog);
+  }
+
+  Future<void> _refresh() async {
+    viewModel.getProfile(context);
+  }
+
+  Widget _buildTopRowItem() {
+    return ShimmerLoading(
+      isLoading: _isLoading,
+      child: CardProfileShimmer(isLoading: _isLoading),
+    );
   }
 }

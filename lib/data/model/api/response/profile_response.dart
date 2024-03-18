@@ -7,18 +7,20 @@ part 'profile_response.g.dart';
 @JsonSerializable()
 class ProfileResponse{
   int? id;
-  String? fullName;
+  String? name;
   String? phone;
   String? address;
   String? avatar;
+  String? email;
   double? averageRating;
 
   ProfileResponse(
       {required this.id,
-      required this.fullName,
+      required this.name,
       required this.phone,
       required this.address,
       required this.avatar,
+      required this.email,
       required this.averageRating});
 
   factory ProfileResponse.fromJson(Map<String, dynamic> data) => _$ProfileResponseFromJson(data);
