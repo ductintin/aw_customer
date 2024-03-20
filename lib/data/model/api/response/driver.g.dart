@@ -1,27 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'customer_response.dart';
+part of 'driver.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-CustomerResponse _$CustomerResponseFromJson(Map<String, dynamic> json) =>
-    CustomerResponse(
+Driver _$DriverFromJson(Map<String, dynamic> json) => Driver(
       json['id'] as int?,
-      json['name'] as String?,
+      json['fullName'] as String?,
+      json['address'] as String?,
       json['phone'] as String?,
-      json['email'] as String?,
-      json['avatar'] as String?,
       json['status'] as int?,
+      json['avatar'] as String?,
     );
 
-Map<String, dynamic> _$CustomerResponseToJson(CustomerResponse instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$DriverToJson(Driver instance) => <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
+      'fullName': instance.fullName,
+      'address': instance.address,
       'phone': instance.phone,
-      'email': instance.email,
-      'avatar': instance.avatar,
       'status': instance.status,
+      'avatar': instance.avatar,
     };

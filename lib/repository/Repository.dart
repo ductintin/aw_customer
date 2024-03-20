@@ -1,6 +1,7 @@
 
 import 'dart:developer';
 
+import 'package:aw_customer/data/model/api/response/booking_response.dart';
 import 'package:aw_customer/data/model/api/response/search_location_response.dart';
 import 'package:dio/dio.dart';
 import 'package:aw_customer/data/model/api/request/LoginRequest.dart';
@@ -142,6 +143,23 @@ class Repository{
       return jsonData;
     }catch(e){
       log("Searchlocation Error: $e");
+      rethrow;
+    }
+  }
+
+  Future<ResponseWrapper<BookingResponse>> getBooking(int? id) async {
+    Options options = Options(
+        headers: {
+
+        }
+    );
+
+    try{
+      dynamic res = await _apiService.get('${ApiEndPoints.BOOKING_DETAIL}/$id', options);
+      final jsonData = ResponseWrapper<BookingResponse>.fromJson(res, (p0) => BookingResponse.fromJson(res['data']));
+      return jsonData;
+    }catch(e){
+      log("getBooking Error: $e");
       rethrow;
     }
   }

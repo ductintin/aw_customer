@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:aw_customer/data/model/api/response/history_response.dart';
+import 'package:aw_customer/ui/history/detail/history_detail_screen.dart';
 import 'package:aw_customer/utils/number_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -30,7 +31,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
             ),
             child: InkWell(
               onTap: () {
-                print("hekko");
+                Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryDetailScreen(widget.hs?.id!)));
               },
               borderRadius: BorderRadius.circular(10.0),
               child: Padding(

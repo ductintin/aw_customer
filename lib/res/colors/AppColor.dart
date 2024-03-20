@@ -6,7 +6,9 @@ class AppColor{
   static const Color mainColor = Color(0xff7EA567);
   static const Color secondColor = Color(0xff7EA567);
 
-  static const _shimmerGradient = LinearGradient(
+  static const Color backgroundColor = Color(0xffEEF2F5);
+
+  static get shimmerGradient => const LinearGradient(
     colors: [
       Color(0xFFEBEBF4),
       Color(0xFFF4F4F4),

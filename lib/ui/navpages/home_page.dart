@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage>
     // TODO: implement build
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xffEEF2F5),
+      backgroundColor: AppColor.backgroundColor,
       body: ChangeNotifierProvider<HomePageViewModel>(
         create: (BuildContext context) => vm,
         child: Consumer<HomePageViewModel>(

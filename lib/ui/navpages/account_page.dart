@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aw_customer/data/remote/network/ApiEndPoints.dart';
 import 'package:aw_customer/data/remote/network/BaseApiService.dart';
+import 'package:aw_customer/ui/account/account_screen.dart';
 import 'package:aw_customer/ui/navpages/account_page_view_model.dart';
 import 'package:aw_customer/ui/widget/card_profile_shimmer.dart';
 import 'package:aw_customer/ui/widget/circle_item_widget.dart';
@@ -38,24 +39,9 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    const _shimmerGradient = LinearGradient(
-      colors: [
-        Color(0xFFEBEBF4),
-        Color(0xFFF4F4F4),
-        Color(0xFFEBEBF4),
-      ],
-      stops: [
-        0.1,
-        0.3,
-        0.4,
-      ],
-      begin: Alignment(-1.0, -0.3),
-      end: Alignment(1.0, 0.3),
-      tileMode: TileMode.clamp,
-    );
 
     return Scaffold(
-      backgroundColor: Color(0xffEEF2F5),
+      backgroundColor: AppColor.backgroundColor,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _refresh,
@@ -81,72 +67,78 @@ class _AccountPageState extends State<AccountPage> {
                               ),
                             ),
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
+                          InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountScreen()));
+                            },
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
 
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: value.res.status == ApiStatus.LOADING ?
-                                  Shimmer(
-                                      linearGradient: _shimmerGradient,
-                                    child: _buildTopRowItem(),
-                                    )
+                              child: Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: value.res.status == ApiStatus.LOADING ?
+                                    Shimmer(
+                                        linearGradient: AppColor.shimmerGradient,
+                                      child: _buildTopRowItem(),
+                                      )
 
-                               : value.res.status == ApiStatus.ERROR ?
-                              Image(
-                                image: AssetImage('assets/images/user_avatar.png'),
-                                width: 50.0,
-                                height: 50.0,
-                              )
-                               :
-                              Row(
-                                children: [
-                                  ClipOval(
-                                    child: Image.network(
-                                      '${BaseApiService.MEDIA_URL}/v1/file/download${value.res.data!.avatar!}',
-                                      width: 60.0,
-                                      height: 60.0,
+                                 : value.res.status == ApiStatus.ERROR ?
+                                Image(
+                                  image: AssetImage('assets/images/user_avatar.png'),
+                                  width: 50.0,
+                                  height: 50.0,
+                                )
+                                 :
+                                Row(
+                                  children: [
+                                    ClipOval(
+                                      child: Image.network(
+                                        '${BaseApiService.MEDIA_URL}/v1/file/download${value.res.data!.avatar!}',
+                                        width: 60.0,
+                                        height: 60.0,
+                                      ),
                                     ),
-                                  ),
 
-                                  SizedBox(
-                                    width: 30,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          value.res.data?.name ?? '',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 18.0),
-                                        ),
-
-                                        Text(
-                                          value.res.data?.email ?? '',
-                                          style: TextStyle(fontWeight: FontWeight.w500,
-                                              color: Colors.grey
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            value.res.data?.name ?? '',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 18.0),
                                           ),
-                                        )
 
-                                      ],
+                                          Text(
+                                            value.res.data?.email ?? '',
+                                            style: TextStyle(fontWeight: FontWeight.w500,
+                                                color: Colors.grey
+                                            ),
+                                          )
+
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  // Image(
-                                  //   image: AssetImage('assets/images/icon_arrow.png'),
-                                  //   width: 50.0,
-                                  //   height: 50.0,
-                                  // ),
+                                    // Image(
+                                    //   image: AssetImage('assets/images/icon_arrow.png'),
+                                    //   width: 50.0,
+                                    //   height: 50.0,
+                                    // ),
 
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 25.0,
-                                  )
-                                ],
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 25.0,
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),

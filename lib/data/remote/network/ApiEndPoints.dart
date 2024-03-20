@@ -14,5 +14,6 @@ class ApiEndPoints {
 
   static const String SEARCH_LOCATION = "place/autocomplete/json";
   static const String GEO_API_KEY = "AIzaSyAQWUevZCTLaVd9a1Z2WEA2_e2gO9iW8rU";
+  static const String BOOKING_DETAIL = "v1/booking/detail-booking";
 }
 

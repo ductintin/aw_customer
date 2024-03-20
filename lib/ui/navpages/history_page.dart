@@ -48,22 +48,6 @@ class _HistoryPageState extends State<HistoryPage>
 
   @override
   Widget build(BuildContext context) {
-    const _shimmerGradient = LinearGradient(
-      colors: [
-        Color(0xFFEBEBF4),
-        Color(0xFFF4F4F4),
-        Color(0xFFEBEBF4),
-      ],
-      stops: [
-        0.1,
-        0.3,
-        0.4,
-      ],
-      begin: Alignment(-1.0, -0.3),
-      end: Alignment(1.0, 0.3),
-      tileMode: TileMode.clamp,
-    );
-
     return Scaffold(
       backgroundColor: Color(0xffEEF2F5),
       body: SafeArea(
@@ -94,7 +78,7 @@ class _HistoryPageState extends State<HistoryPage>
                           case ApiStatus.LOADING:
                             //return const Center(child: SpinKitThreeBounce(color: Color(0xff7EA567), size: 30.0,));
                             return Shimmer(
-                              linearGradient: _shimmerGradient,
+                              linearGradient: AppColor.shimmerGradient,
                               child: ListView(
                                 physics: _isLoading
                                     ? const NeverScrollableScrollPhysics()

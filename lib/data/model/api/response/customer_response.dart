@@ -10,8 +10,9 @@ class CustomerResponse{
   String? phone;
   String? email;
   String? avatar;
+  int? status;
 
-  CustomerResponse(this.id, this.name, this.phone, this.email, this.avatar);
+  CustomerResponse(this.id, this.name, this.phone, this.email, this.avatar, this.status);
 
   factory CustomerResponse.fromJson(Map<String, dynamic> data) => _$CustomerResponseFromJson(data);
 
