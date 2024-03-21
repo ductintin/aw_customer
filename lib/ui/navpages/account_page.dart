@@ -4,6 +4,7 @@ import 'package:aw_customer/data/remote/network/ApiEndPoints.dart';
 import 'package:aw_customer/data/remote/network/BaseApiService.dart';
 import 'package:aw_customer/ui/account/account_screen.dart';
 import 'package:aw_customer/ui/navpages/account_page_view_model.dart';
+import 'package:aw_customer/ui/rating/rating_screen.dart';
 import 'package:aw_customer/ui/widget/card_profile_shimmer.dart';
 import 'package:aw_customer/ui/widget/circle_item_widget.dart';
 import 'package:flutter/material.dart';
@@ -156,7 +157,7 @@ class _AccountPageState extends State<AccountPage> {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      print('hello');
+                                      Navigator.push(context, MaterialPageRoute(builder: (_) => RatingScreen()));
                                     },
                                     child: const Padding(
                                       padding: EdgeInsets.all(12.0),

@@ -47,6 +47,13 @@ class _HistoryPageState extends State<HistoryPage>
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffEEF2F5),

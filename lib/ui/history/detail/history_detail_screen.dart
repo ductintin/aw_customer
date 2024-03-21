@@ -26,7 +26,7 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
     super.initState();
     viewModel.getBooking(widget.historyId);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,7 +115,9 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
       ));
   }
 
-  Future<void> _refresh() async{}
+  Future<void> _refresh() async{
+    viewModel.getBooking(widget.historyId);
+  }
 
   _ui(HistoryDetailViewModel vm){
     return Column(
